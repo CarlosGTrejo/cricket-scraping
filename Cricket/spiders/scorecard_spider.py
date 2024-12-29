@@ -9,7 +9,7 @@ class ScorecardSpider(scrapy.Spider):
     def parse(self, response):
         # yield from response.follow_all(css="div.ds-w-full:nth-child(2) > div:nth-child(1) a", callback=self.parse_year_table)
         for anchor in response.css('div.ds-w-full:nth-child(2) > div:nth-child(1) a'):
-            if anchor.css(' ::text').get().strip() in ('2005', '2011', '2022'):
+            if anchor.css(' ::text').get().strip() in ('2005', '2022'):
                 yield response.follow(anchor, callback=self.parse_year_table)
 
     def parse_year_table(self, response):
@@ -26,31 +26,43 @@ class ScorecardSpider(scrapy.Spider):
         main_divs = response.css('div.ds-w-full div.ds-w-full.ds-bg-fill-content-prime.ds-overflow-hidden.ds-rounded-xl.ds-border.ds-border-line.ds-mb-4')
 
         # Get runs and wickets for each team
-        # TEAM 1
-        team_1 = main_divs[0]
-        team_1_name = team_1.css('div:first-child ::text').get()
-        team_1_table = team_1.css('table')[0]  # Get team 1 table
-        row = search_rows(team_1_table, 'Total')
-        row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
-
-        if row_data[-1].startswith('/'):  # if the last element is a '/' then we have runs and wickets
-            team_1_runs, team_1_wickets = row_data[-2], row_data[-1].strip('/')
+        try:
+            # TEAM 1
+            team_1 = main_divs[0]
+            team_1_name = team_1.css('div:first-child ::text').get()
+            team_1_table = team_1.css('table')[0]  # Get team 1 table
+            row = search_rows(team_1_table, 'Total')
+            row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
+        except (AttributeError, IndexError) as e:
+            print('Team 1'.center(50, '='))
+            print(e)
+            team_1_runs = ''
+            team_1_wickets = ''
         else:
-            team_1_runs = row_data[0]
-            team_1_wickets = '10'  # default value
+            if row_data[-1].startswith('/'):  # if the last element is a '/' then we have runs and wickets
+                team_1_runs, team_1_wickets = row_data[-2], row_data[-1].strip('/')
+            else:
+                team_1_runs = row_data[0]
+                team_1_wickets = '10'  # default value
 
-        # TEAM 2
-        team_2 = main_divs[1]
-        team_2_name = team_2.css('div:first-child ::text').get()
-        team_2_table = team_2.css('table')[0]  # Get team 2 table
-        row = search_rows(team_2_table, 'Total')
-        row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
-
-        if row_data[-1].startswith('/'):  # if the last element is a '/' then we have runs and wickets
-            team_2_runs, team_2_wickets = row_data[-2], row_data[-1].strip('/')
+        try:
+            # TEAM 2
+            team_2 = main_divs[1]
+            team_2_name = team_2.css('div:first-child ::text').get()
+            team_2_table = team_2.css('table')[0]  # Get team 2 table
+            row = search_rows(team_2_table, 'Total')
+            row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
+        except (AttributeError, IndexError) as e:
+            print('Team 2'.center(50, '='))
+            print(e)
+            team_2_runs = ''
+            team_2_wickets = ''
         else:
-            team_2_runs = row_data[0]
-            team_2_wickets = '10'  # default value
+            if row_data[-1].startswith('/'):  # if the last element is a '/' then we have runs and wickets
+                team_2_runs, team_2_wickets = row_data[-2], row_data[-1].strip('/')
+            else:
+                team_2_runs = row_data[0]
+                team_2_wickets = '10'  # default value
 
 
         # Get match details section
