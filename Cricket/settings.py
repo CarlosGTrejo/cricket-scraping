@@ -92,3 +92,15 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 LOG_LEVEL = "WARNING"
 LOG_FILE = "cricket_scraping.log"
+
+FEEDS = {
+    'output.xlsx': {
+        'format': 'xlsx',
+        'fields': ['Match ID', 'Ground', 'Toss', 'Winner', 'Bat1', 'Runs1', 'Wickets1', 'Bat2', 'Runs2', 'Wickets2', 'Daytime'],
+        'overwrite': True
+    }
+}
+
+FEED_EXPORTERS = {
+    'xlsx': 'Cricket.exporters.ExcelItemExporter'
+}

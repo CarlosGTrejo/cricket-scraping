@@ -76,19 +76,22 @@ class ScorecardSpider(scrapy.Spider):
         day_night_raw = row.css(' ::text').getall()[2]
         day_night = day_night_raw.replace(' - ', '')
 
-        yield {
-            'Match ID': match_id,
-            'Ground': ground,
-            'Toss': toss_team,
-            'Winner': winner,
-            'Bat1': team_1_name,
-            'Runs1': team_1_runs,
-            'Wickets1': team_1_wickets,
-            'Bat2': team_2_name,
-            'Runs2': team_2_runs,
-            'Wickets2': team_2_wickets,
-            'Daytime': day_night,
-        }
+
+        # Create item
+        item = MatchItem()
+        item['Match ID'] = match_id
+        item['Ground'] = ground
+        item['Toss'] = toss_team
+        item['Winner'] = winner
+        item['Bat1'] = team_1_name
+        item['Runs1'] = team_1_runs
+        item['Wickets1'] = team_1_wickets
+        item['Bat2'] = team_2_name
+        item['Runs2'] = team_2_runs
+        item['Wickets2'] = team_2_wickets
+        item['Daytime'] = day_night
+
+        yield item
 
 
 def search_rows(table, search_text):

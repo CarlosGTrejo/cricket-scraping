@@ -6,7 +6,15 @@
 import scrapy
 
 
-class CricketItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class MatchItem(scrapy.Item):
+    ID = scrapy.Field()
+    Ground = scrapy.Field()
+    Toss = scrapy.Field()
+    Winner = scrapy.Field()
+    Bat1 = scrapy.Field()
+    Runs1 = scrapy.Field()
+    Wickets1 = scrapy.Field()
+    Bat2 = scrapy.Field()
+    Runs2 = scrapy.Field()
+    Wickets2 = scrapy.Field()
+    Daytime = scrapy.Field()
