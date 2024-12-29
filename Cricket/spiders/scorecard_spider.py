@@ -1,5 +1,5 @@
 import scrapy
-
+from Cricket.items import MatchItem
 
 class ScorecardSpider(scrapy.Spider):
     name = "scorecards"
@@ -79,7 +79,7 @@ class ScorecardSpider(scrapy.Spider):
 
         # Create item
         item = MatchItem()
-        item['Match ID'] = match_id
+        item['ID'] = match_id
         item['Ground'] = ground
         item['Toss'] = toss_team
         item['Winner'] = winner
