@@ -25,11 +25,15 @@ class ScorecardSpider(scrapy.Spider):
         # Get main divs
         main_divs = response.css('div.ds-w-full div.ds-w-full.ds-bg-fill-content-prime.ds-overflow-hidden.ds-rounded-xl.ds-border.ds-border-line.ds-mb-4')
 
+        # Get team names
+        heading = response.css('h1.ds-text-title-xs ::text').extract_first()
+        teams = heading.split(',')
+        team_1_name, team_2_name = teams.split(' vs ')
+
         # Get runs and wickets for each team
         try:
             # TEAM 1
             team_1 = main_divs[0]
-            team_1_name = team_1.css('div:first-child ::text').get()
             team_1_table = team_1.css('table')[0]  # Get team 1 table
             row = search_rows(team_1_table, 'Total')
             row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
@@ -48,7 +52,6 @@ class ScorecardSpider(scrapy.Spider):
         try:
             # TEAM 2
             team_2 = main_divs[1]
-            team_2_name = team_2.css('div:first-child ::text').get()
             team_2_table = team_2.css('table')[0]  # Get team 2 table
             row = search_rows(team_2_table, 'Total')
             row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
