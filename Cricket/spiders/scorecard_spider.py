@@ -91,7 +91,7 @@ class ScorecardSpider(scrapy.Spider):
         day_night_raw = ''.join(
             row
             .css(' ::text')
-            .getall()[1:]
+            .getall()[-3:]
             ).strip()
         day_night = day_night_raw.replace(' - ', '')
 
