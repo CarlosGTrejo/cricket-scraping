@@ -1,0 +1,50 @@
+# Cricket Match Data Scraper
+
+A web scraper built with Scrapy to collect cricket match data from ESPNcricinfo. The scraper collects match details including ground, toss, winner, batting scores, and other details, saving the results to an Excel file.
+
+## Requirements
+- Python 3.12
+- PDM (Python package manager)
+
+## Installation
+
+1. Clone this repository
+2. Install PDM using `pip` or `pipx`:
+   ```bash
+   pipx install pdm
+   ```
+3. Install dependencies using PDM:
+   ```bash
+   pdm install
+   ```
+
+## Usage
+
+To run the scraper, use the following command:
+```bash
+pdm run scrapy crawl scorecards
+```
+The scraper will:
+- Start from the ESPNcricinfo match results page
+- Currently scrapes matches from 2005 and 2022 (can be modified in the spider)
+- Save results to `output.xlsx` in the project root directory
+
+
+## Output Format
+
+The scraper collects the following data for each match:
+- ID: Match identification number
+- Ground: Match venue
+- Toss: Team that won the toss
+- Winner: Match winner
+- Bat1: First batting team
+- Runs1: First innings runs
+- Wickets1: First innings wickets
+- Bat2: Second batting team
+- Runs2: Second innings runs
+- Wickets2: Second innings wickets
+- Daytime: Match timing information
+
+## Logging
+
+The scraper logs its activity to `cricket_scraping.log`. The current log level is set to WARNING to reduce output verbosity.

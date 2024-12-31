@@ -88,7 +88,11 @@ class ScorecardSpider(scrapy.Spider):
 
         # Get daytime
         row = search_rows(details_table, 'Match days')
-        day_night_raw = row.css(' ::text').getall()[2]
+        day_night_raw = ''.join(
+            row
+            .css(' ::text')
+            .getall()[1:]
+            ).strip()
         day_night = day_night_raw.replace(' - ', '')
 
 
