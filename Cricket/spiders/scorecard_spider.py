@@ -27,7 +27,7 @@ class ScorecardSpider(scrapy.Spider):
 
         # Get team names
         heading = response.css('h1.ds-text-title-xs ::text').extract_first()
-        teams = heading.split(',')
+        teams = heading.split(',')[0]
         team_1_name, team_2_name = teams.split(' vs ')
 
         # Get runs and wickets for each team
