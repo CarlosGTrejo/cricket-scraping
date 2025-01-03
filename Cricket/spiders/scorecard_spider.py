@@ -39,6 +39,7 @@ class ScorecardSpider(scrapy.Spider):
             row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
         except (AttributeError, IndexError) as e:
             self.logger.warning(f"Error parsing team 1 in {response.url}")
+            self.logger.warning(e)
             team_1_runs = ''
             team_1_wickets = ''
         else:
@@ -56,6 +57,7 @@ class ScorecardSpider(scrapy.Spider):
             row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
         except (AttributeError, IndexError) as e:
             self.logger.warning(f"Error parsing team 2 in {response.url}")
+            self.logger.warning(e)
             team_2_runs = ''
             team_2_wickets = ''
         else:
