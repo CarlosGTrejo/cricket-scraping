@@ -96,7 +96,7 @@ LOG_FILE = "cricket_scraping.log"
 FEEDS = {
     'output.xlsx': {
         'format': 'xlsx',
-        'fields': ['ID', 'Ground', 'Toss', 'Winner', 'Bat1', 'Runs1', 'Wickets1', 'Bat2', 'Runs2', 'Wickets2', 'Daytime'],
+        'fields': ['ID', 'Ground', 'Daytime', 'Toss', 'Winner', 'Bat1', 'Bat2', 'Runs1', 'Runs2', 'Wickets1', 'Wickets2'],
         'overwrite': True
     }
 }

@@ -38,8 +38,7 @@ class ScorecardSpider(scrapy.Spider):
             row = search_rows(team_1_table, 'Total')
             row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
         except (AttributeError, IndexError) as e:
-            print('Team 1'.center(50, '='))
-            print(e)
+            self.logger.warning(f"Error parsing team 1 in {response.url}")
             team_1_runs = ''
             team_1_wickets = ''
         else:
@@ -56,8 +55,7 @@ class ScorecardSpider(scrapy.Spider):
             row = search_rows(team_2_table, 'Total')
             row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
         except (AttributeError, IndexError) as e:
-            print('Team 2'.center(50, '='))
-            print(e)
+            self.logger.warning(f"Error parsing team 2 in {response.url}")
             team_2_runs = ''
             team_2_wickets = ''
         else:
@@ -92,8 +90,8 @@ class ScorecardSpider(scrapy.Spider):
             row
             .css(' ::text')
             .getall()[-3:]
-            ).strip()
-        day_night = day_night_raw.replace(' - ', '')
+            ).strip(' -')
+        day_night = day_night_raw.split()[0]
 
 
         # Create item
