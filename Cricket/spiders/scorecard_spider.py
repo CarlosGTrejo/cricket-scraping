@@ -9,7 +9,7 @@ class ScorecardSpider(scrapy.Spider):
     def parse(self, response):
         # yield from response.follow_all(css="div.ds-w-full:nth-child(2) > div:nth-child(1) a", callback=self.parse_year_table)
         for anchor in response.css('div.ds-w-full:nth-child(2) > div:nth-child(1) a'):
-            if anchor.css(' ::text').get().strip() in ('2005', '2022'):
+            if anchor.css(' ::text').get().strip() in ('2005', '2011','2022'):
                 yield response.follow(anchor, callback=self.parse_year_table)
 
     def parse_year_table(self, response):
@@ -18,6 +18,9 @@ class ScorecardSpider(scrapy.Spider):
         yield from response.follow_all(css="table tr td:nth-child(7) a", callback=self.parse_scorecard)
 
     def parse_scorecard(self, response):
+        # Get Date
+        date = response.css('h1.ds-text-title-xs ::text').getall()[-3]
+        
         # Get winner
         winner_text = response.css('p.ds-text-tight-s:nth-child(3) ::text').get()
         winner = winner_text.split(' won')[0]
@@ -36,12 +39,15 @@ class ScorecardSpider(scrapy.Spider):
             team_1 = main_divs[0]
             team_1_table = team_1.css('table')[0]  # Get team 1 table
             row = search_rows(team_1_table, 'Total')
+            ov1_raw = row.css('::text').getall()[1]  # Format: ## Ov
+            ov1 = ov1_raw.split()[0]
             row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
         except (AttributeError, IndexError) as e:
-            self.logger.warning(f"Error parsing team 1 in {response.url}")
+            self.logger.warning(f"Error parsing team 1 in {response.url} - Setting runs, wickets, and overs to empty strings")
             self.logger.warning(e)
             team_1_runs = ''
             team_1_wickets = ''
+            ov1 = ''
         else:
             if row_data[-1].startswith('/'):  # if the last element is a '/' then we have runs and wickets
                 team_1_runs, team_1_wickets = row_data[-2], row_data[-1].strip('/')
@@ -54,12 +60,15 @@ class ScorecardSpider(scrapy.Spider):
             team_2 = main_divs[1]
             team_2_table = team_2.css('table')[0]  # Get team 2 table
             row = search_rows(team_2_table, 'Total')
+            ov2_raw = row.css('::text').getall()[1]  # Format: ## Ov
+            ov2 = ov2_raw.split()[0]
             row_data = row.css('td:nth-child(3) ::text').getall()  # Get runs and wickets
         except (AttributeError, IndexError) as e:
-            self.logger.warning(f"Error parsing team 2 in {response.url}")
+            self.logger.warning(f"Error parsing team 2 in {response.url} - Setting runs, wickets, and overs to empty strings")
             self.logger.warning(e)
             team_2_runs = ''
             team_2_wickets = ''
+            ov2 = ''
         else:
             if row_data[-1].startswith('/'):  # if the last element is a '/' then we have runs and wickets
                 team_2_runs, team_2_wickets = row_data[-2], row_data[-1].strip('/')
@@ -84,30 +93,42 @@ class ScorecardSpider(scrapy.Spider):
 
         # Get match ID
         row = search_rows(details_table, 'Match number')
-        match_id = row.css('td:nth-child(2) ::text').get()
+        match_id_raw = row.css('td:nth-child(2) ::text').get()
+        match_id = match_id_raw.split()[-1]
 
         # Get daytime
+        day_night = ''  # default value
         row = search_rows(details_table, 'Match days')
-        day_night_raw = ''.join(
-            row
-            .css(' ::text')
-            .getall()[-3:]
-            ).strip(' -')
-        day_night = day_night_raw.split()[0]
+        if row is not None:
+            day_night_raw = ''.join(
+                row
+                .css(' ::text')
+                .getall()[1:]  # Exclude 'Match days'
+                )
+            # This seemed to be the most reliable way to get the daytime
+            if 'daynight' in day_night_raw.lower():
+                day_night = 'daynight'
+            elif 'day' in day_night_raw.lower():
+                day_night = 'day'
+            elif 'night' in day_night_raw.lower():
+                day_night = 'night'
 
 
         # Create item
         item = MatchItem()
         item['ID'] = match_id
+        item['Date'] = date
         item['Ground'] = ground
         item['Toss'] = toss_team
         item['Winner'] = winner
         item['Bat1'] = team_1_name
         item['Runs1'] = team_1_runs
         item['Wickets1'] = team_1_wickets
+        item['Over1'] = ov1
         item['Bat2'] = team_2_name
         item['Runs2'] = team_2_runs
         item['Wickets2'] = team_2_wickets
+        item['Over2'] = ov2
         item['Daytime'] = day_night
 
         yield item

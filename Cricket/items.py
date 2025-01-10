@@ -8,6 +8,7 @@ import scrapy
 
 class MatchItem(scrapy.Item):
     ID = scrapy.Field()
+    Date = scrapy.Field()
     Ground = scrapy.Field()
     Daytime = scrapy.Field()
     Toss = scrapy.Field()
@@ -18,3 +19,5 @@ class MatchItem(scrapy.Item):
     Runs2 = scrapy.Field()
     Wickets1 = scrapy.Field()
     Wickets2 = scrapy.Field()
+    Over1 = scrapy.Field()
+    Over2 = scrapy.Field()

@@ -98,6 +98,7 @@ FEEDS = {
         'format': 'xlsx',
         'fields': [
             'ID',
+            'Date',
             'Ground',
             'Daytime',
             'Toss',
@@ -107,7 +108,9 @@ FEEDS = {
             'Runs1',
             'Runs2',
             'Wickets1',
-            'Wickets2'
+            'Wickets2',
+            'Over1',
+            'Over2'
         ],
         'overwrite': True
     }
