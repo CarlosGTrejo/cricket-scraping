@@ -9,8 +9,7 @@ class ScorecardSpider(scrapy.Spider):
     def parse(self, response):
         # yield from response.follow_all(css="div.ds-w-full:nth-child(2) > div:nth-child(1) a", callback=self.parse_year_table)
         for anchor in response.css('div.ds-w-full:nth-child(2) > div:nth-child(1) a'):
-            if anchor.css(' ::text').get().strip() in ('2005', '2011','2022'):
-                yield response.follow(anchor, callback=self.parse_year_table)
+            yield response.follow(anchor, callback=self.parse_year_table)
 
     def parse_year_table(self, response):
         year = response.css('h1::text').get()
